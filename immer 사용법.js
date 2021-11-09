@@ -3,6 +3,7 @@
 
 /* --------------------------------- 예시 코드 1 -------------------------------- */
 import produce from 'immer';
+import { useCallback } from 'react';
 
 const nextState = produce(originalState, draft => {
     // 바꾸고 싶은 값 바꾸기
@@ -42,4 +43,21 @@ const nextState = produce(originalState, draft => {
     draft.splice(draft.findIndex(t => t.id === 1), 1);
 })
 
-//draft??
+/* --------------------------------- 예시 코드 3 -------------------------------- */
+// useState의 함수형 업데이트와 immer 함께 쓰기
+const [number, setNumber] = useState(0);
+// prevNumbers는 현재 number 값을 가리킵니다.
+const onIncrease = useCallback(
+    () => setNumber(prevNumber => prevNumber + 1),
+    [],
+);
+
+const update = produce(draft => {
+    draft.value = 2;
+});
+const originalState = {
+    value : 1,
+    foo : 'bar',
+};
+const nextState = update(originalState);
+console.log(nextState); // { value : 2, foo : 'bar' }
